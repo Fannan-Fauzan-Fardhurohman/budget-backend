@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bougette-backend/common"
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -9,16 +10,10 @@ import (
 	"strings"
 )
 
-type ValidationError struct {
-	Error     string `json:"error"`
-	Key       string `json:"key"`
-	Condition string `json:"condition"`
-}
-
-func (h *Handler) ValidateBodyRequest(c echo.Context, payload interface{}) []*ValidationError {
+func (h *Handler) ValidateBodyRequest(c echo.Context, payload interface{}) []*common.ValidationError {
 	var validate *validator.Validate
 	validate = validator.New(validator.WithRequiredStructEnabled())
-	var errors []*ValidationError
+	var errors []*common.ValidationError
 	err := validate.Struct(payload)
 	validationErrors, ok := err.(validator.ValidationErrors)
 	if ok {
@@ -47,7 +42,7 @@ func (h *Handler) ValidateBodyRequest(c echo.Context, payload interface{}) []*Va
 				}
 			}
 
-			currentValidationError := &ValidationError{
+			currentValidationError := &common.ValidationError{
 				Error:     errMessage,
 				Key:       key,
 				Condition: condition,
