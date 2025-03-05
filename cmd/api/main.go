@@ -4,6 +4,7 @@ import (
 	"bougette-backend/cmd/api/handlers"
 	"bougette-backend/cmd/api/middlewares"
 	"bougette-backend/common"
+	"bougette-backend/internal/mailer"
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -30,9 +31,11 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	appMailer := mailer.NewMailer(e.Logger)
 	h := handlers.Handler{
 		DB:     db,
 		Logger: e.Logger,
+		Mailer: appMailer,
 	}
 	app := Application{
 		logger:  e.Logger,
