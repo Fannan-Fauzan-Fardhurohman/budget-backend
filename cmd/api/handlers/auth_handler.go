@@ -5,6 +5,7 @@ import (
 	"bougette-backend/cmd/api/services"
 	"bougette-backend/common"
 	"bougette-backend/internal/mailer"
+	"bougette-backend/internal/models"
 	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
@@ -45,7 +46,7 @@ func (h *Handler) RegisterHandler(c echo.Context) error {
 		},
 	}
 	// Send a welcome message to the user
-	err = h.Mailer.Send(payload.Email, "hello.html", mailData)
+	err = h.Mailer.Send(payload.Email, "welcome.html", mailData)
 	if err != nil {
 		h.Logger.Error(err)
 	}
@@ -74,7 +75,7 @@ func (h *Handler) LoginHandler(c echo.Context) error {
 	if common.ComparePasswordHash(payload.Password, userRetrieved.Password) == false {
 		return common.SendBadRequestResponse(c, "Invalid credential")
 	}
-	// send response with token
+
 	accessToken, refreshToken, err := common.GenerateJWT(*userRetrieved)
 	if err != nil {
 		return common.SendInternalServerErrorResponse(c, err.Error())
@@ -84,5 +85,16 @@ func (h *Handler) LoginHandler(c echo.Context) error {
 		"refreshToken": refreshToken,
 		"user":         userRetrieved,
 	})
+}
 
+func (h Handler) GetAuthenticatedUser(c echo.Context) error {
+	user, ok := c.Get("user").(models.UserModel)
+	if !ok {
+		return common.SendInternalServerErrorResponse(c, "User authentication failed")
+	}
+	return common.SendSuccessResponse(c, "Authenticated user retrieved", user)
+}
+
+func (h Handler) UpdateUserPassword(c echo.Context) error {
+	return nil
 }

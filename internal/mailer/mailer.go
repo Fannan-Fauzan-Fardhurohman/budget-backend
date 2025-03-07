@@ -45,7 +45,7 @@ func NewMailer(logger echo.Logger) Mailer {
 }
 
 func (mailer *Mailer) Send(recipient string, templateFile string, data EmailData) error {
-	absolutePath := filepath.Join("templates", templateFile)
+	absolutePath := filepath.Join("templates/", templateFile)
 	fmt.Println(absolutePath)
 	tmpl, err := template.ParseFS(templateFS, absolutePath)
 	if err != nil {
