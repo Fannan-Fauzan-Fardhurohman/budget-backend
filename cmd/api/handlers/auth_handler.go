@@ -15,7 +15,7 @@ import (
 
 func (h *Handler) RegisterHandler(c echo.Context) error {
 	payload := new(requests.RegisterUserRequest)
-	if err := (&echo.DefaultBinder{}).BindBody(c, payload); err != nil {
+	if err := h.BindBodyRequest(c, payload); err != nil {
 		return common.SendBadRequestResponse(c, err.Error())
 	}
 	c.Logger().Info(payload)
@@ -96,5 +96,10 @@ func (h Handler) GetAuthenticatedUser(c echo.Context) error {
 }
 
 func (h Handler) UpdateUserPassword(c echo.Context) error {
+	user, ok := c.Get("user").(models.UserModel)
+	if !ok {
+		return common.SendInternalServerErrorResponse(c, "User authentication failed")
+	}
+
 	return nil
 }
