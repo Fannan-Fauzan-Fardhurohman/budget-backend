@@ -26,7 +26,6 @@ func (h *Handler) ChangeUserPassword(c echo.Context) error {
 		return common.SendFailedValidationResponse(c, validationErrors)
 	}
 
-	// compare the client current  password with the hashed password
 	if common.ComparePasswordHash(payload.CurrentPassword, user.Password) == false {
 		return common.SendBadRequestResponse(c, "the supplied password does not match your current password")
 	}

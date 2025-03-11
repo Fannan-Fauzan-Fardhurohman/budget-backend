@@ -16,6 +16,8 @@ func (app *Application) routes(handler handlers.Handler) {
 	{
 		profileRoutes.GET("/authenticated/user", handler.GetAuthenticatedUser)
 		profileRoutes.PATCH("/change/password", handler.ChangeUserPassword)
+		profileRoutes.POST("/forgot/password", handler.ForgotPasswordHandler)
+		profileRoutes.POST("/reset/password", handler.ResetPasswordHandler)
 	}
 
 	publicAuthRoutes.GET("/", handler.HealthCheck)
